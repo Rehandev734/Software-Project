@@ -21,7 +21,6 @@ class MainMenu implements ActionListener{
 	private Button delCnt;
 	private TextField[] l= {new TextField(null), new TextField(null)};
 	 private File myFile;
-;
 	 private File f2;
 
 
@@ -36,7 +35,7 @@ class MainMenu implements ActionListener{
 
 	public void menu() {
 		
-		System.out.println("File myFile has: "+myFile.getName()+" ok\n");
+		//System.out.println("File myFile has: "+myFile.getName()+" ok\n");
 
 
 		 f=new JFrame("Main Menu");
@@ -145,6 +144,8 @@ class MainMenu implements ActionListener{
             	
                	}
             });
+		
+		
 		menu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(e.getSource()==menu) {
@@ -219,6 +220,8 @@ class MainMenu implements ActionListener{
 		v.setSize(700, 800);
 		v.setLayout(null);
 		v.setVisible(true);
+		
+		
 		readFromFile(v);
 
 	}
@@ -393,6 +396,8 @@ class MainMenu implements ActionListener{
             	}
                	}
             });
+		
+		
 		deleteCnt.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(e.getSource()==deleteCnt) {
@@ -401,11 +406,8 @@ class MainMenu implements ActionListener{
             		if(phoneField.getText().isEmpty()) {
             			JOptionPane.showMessageDialog(del, "Please Enter Data in the Field !");
             		}else {
-            			deleteInFile(ph,del);
-            			/*if(myFile.delete()) {
-            				System.out.println("File Deleted "+myFile.getName());
-            			}
-            			f2.renameTo(myFile);*/
+            			deleteInFile(ph, del);
+            			
             			
             			JOptionPane.showMessageDialog(del, "Contact Deleted Successfully !");
             			//myFile=f2;
@@ -528,20 +530,22 @@ class MainMenu implements ActionListener{
 		    			  l[i].setEditable(false);
 		    	  l[i].setText("");
 		    	  }
+		    	  
 
 				
 				Object[] fulLine=read.lines().toArray();
-				int y=360;
+				int y=360, found=0;
 				for(int i=0;i<fulLine.length;i++) {
 					String dt=fulLine[i].toString().trim();
 					String lin[]=dt.split(",");
 					
-					if(lin[0].equals(srch)) {
+					if(lin[0].equalsIgnoreCase(srch)) {
 						for(int no=0;no<l.length;no++) {
 						l[no].setText(lin[no]);
 												
 	            		l[0].setBounds(200, y, 80, 25);
 	            		l[1].setBounds(300, y, 150, 25);
+	            		found=1;
 	            		
 	            		temp.add(l[no]);
 						}
@@ -550,6 +554,9 @@ class MainMenu implements ActionListener{
 						//System.out.println("Nam: "+nam+" Phone: "+phn);	
 					}
 					
+				}
+				if(found==0) {
+					JOptionPane.showMessageDialog(temp, "Contact Not Found !\nPlease add the respective contact.");
 				}
         		try {
 					read.close();
@@ -573,6 +580,7 @@ class MainMenu implements ActionListener{
 
 	    	  try {
 	    		 
+					f2.createNewFile();
 
 		    	  BufferedReader read=new BufferedReader(new FileReader(myFile));
 		    	  BufferedWriter write=new BufferedWriter(new FileWriter(f2, true));
@@ -588,7 +596,7 @@ class MainMenu implements ActionListener{
 					String dt=fulLine[i].toString().trim();
 					String lin[]=dt.split(",");
 					
-					if(lin[1].equals(p)) {
+					if(lin[1].equalsIgnoreCase(p)) {
 			
 					}
 					else {
@@ -609,11 +617,10 @@ class MainMenu implements ActionListener{
 	    	  
 	    	  try {
 					myFile.delete();
-				f2.createNewFile();
 				File tempFile=new File("Contacts.txt");
 				f2.renameTo(tempFile);
 				f2.delete();				
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -627,6 +634,7 @@ class MainMenu implements ActionListener{
 
 		    	  try {
 		    		 
+		    		  f2.createNewFile();
 
 			    	  BufferedReader read=new BufferedReader(new FileReader(myFile));
 			    	  BufferedWriter write=new BufferedWriter(new FileWriter(f2, true));
@@ -642,7 +650,7 @@ class MainMenu implements ActionListener{
 						String dt=fulLine[i].toString().trim();
 						String lin[]=dt.split(",");
 						
-						if(lin[1].equals(op)) {
+						if(lin[1].equalsIgnoreCase(op)) {
 							write.write(nn+","+np+"\n");
 
 							//System.out.println("Nam: "+nam+" Phone: "+phn);	
@@ -665,11 +673,11 @@ class MainMenu implements ActionListener{
 		    	  
 		    	  try {
 						myFile.delete();
-					f2.createNewFile();
+					
 					File tempFile=new File("Contacts.txt");
 					f2.renameTo(tempFile);
 					f2.delete();				
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
